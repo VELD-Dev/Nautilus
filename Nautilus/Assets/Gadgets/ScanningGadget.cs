@@ -13,8 +13,6 @@ namespace Nautilus.Assets.Gadgets;
 /// </summary>
 public class ScanningGadget : Gadget
 {
-    private const string DefaultUnlockMessage = "NotficationBlueprintUnlocked";
-
     private bool _isBuildable;
 
     /// <summary>
@@ -41,6 +39,32 @@ public class ScanningGadget : Gadget
     /// The category within the group in the PDA blueprints where this item appears.
     /// </summary>
     public TechCategory CategoryForPda { get; set; }
+
+    /// <summary>
+    /// Defines the insertion position for the new blueprint in relation to the <see cref="PdaSortTarget"/> in the PDA.
+    /// </summary>
+    public enum SortPosition
+    {
+        /// <summary>
+        /// Use this to insert the new blueprint before the <see cref="PdaSortTarget"/> or at the beginning if not found.
+        /// </summary>
+        InsertBefore,
+
+        /// <summary>
+        /// Use this to append the new blueprint after the <see cref="PdaSortTarget"/> or at the end if not found.
+        /// </summary>
+        AppendAfter
+    }
+
+    /// <summary>
+    /// Whether the blueprint is inserted before or appended after the <see cref="PdaSortTarget"/> in the PDA.
+    /// </summary>
+    public SortPosition PdaSortPosition { get; set; }
+
+    /// <summary>
+    /// It will be added/inserted next to this item or at the end/beginning if not found.
+    /// </summary>
+    public TechType PdaSortTarget { get; set; }
 
     /// <summary>
     /// Adds an encyclopedia entry for this item in the PDA.
@@ -90,7 +114,7 @@ public class ScanningGadget : Gadget
     /// <summary>
     /// Adds this item into a blueprint category to appear in.
     /// </summary>
-    /// <param name="group">The main group in the PDA blueprints where this item appears</param>
+    /// <param name="group">The main group in the PDA blueprints where this item appears.</param>
     /// <param name="category">The category within the group in the PDA blueprints where this item appears.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
     /// <remarks>If the specified <paramref name="group"/> is a tech group that is present in the <see cref="uGUI_BuilderMenu.groups"/> list, this item will automatically
@@ -99,6 +123,52 @@ public class ScanningGadget : Gadget
     {
         GroupForPda = group;
         CategoryForPda = category;
+        PdaSortPosition = SortPosition.AppendAfter;
+        PdaSortTarget = TechType.None;
+        if (uGUI_BuilderMenu.groups.Contains(group))
+        {
+            SetBuildable();
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Adds this item into a blueprint category to appear in.
+    /// </summary>
+    /// <param name="group">The main group in the PDA blueprints where this item appears.</param>
+    /// <param name="category">The category within the group in the PDA blueprints where this item appears.</param>
+    /// <param name="target">It will be added after this target item or at the end if not found.</param>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <remarks>If the specified <paramref name="group"/> is a tech group that is present in the <see cref="uGUI_BuilderMenu.groups"/> list, this item will automatically
+    /// become buildable. To avoid this, or make this item a buildable manually, use the <see cref="SetBuildable"/> method.</remarks>
+    public ScanningGadget WithPdaGroupCategoryAfter(TechGroup group, TechCategory category, TechType target = TechType.None)
+    {
+        GroupForPda = group;
+        CategoryForPda = category;
+        PdaSortPosition = SortPosition.AppendAfter;
+        PdaSortTarget = target;
+        if (uGUI_BuilderMenu.groups.Contains(group))
+        {
+            SetBuildable();
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Adds this item into a blueprint category to appear in.
+    /// </summary>
+    /// <param name="group">The main group in the PDA blueprints where this item appears.</param>
+    /// <param name="category">The category within the group in the PDA blueprints where this item appears.</param>
+    /// <param name="target">It will be inserted before this target item or at the beginning if not found.</param>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <remarks>If the specified <paramref name="group"/> is a tech group that is present in the <see cref="uGUI_BuilderMenu.groups"/> list, this item will automatically
+    /// become buildable. To avoid this, or make this item a buildable manually, use the <see cref="SetBuildable"/> method.</remarks>
+    public ScanningGadget WithPdaGroupCategoryBefore(TechGroup group, TechCategory category, TechType target = TechType.None)
+    {
+        GroupForPda = group;
+        CategoryForPda = category;
+        PdaSortPosition = SortPosition.InsertBefore;
+        PdaSortTarget = target;
         if (uGUI_BuilderMenu.groups.Contains(group))
         {
             SetBuildable();
@@ -118,14 +188,17 @@ public class ScanningGadget : Gadget
     }
 
     /// <summary>
-    /// Adds an encyclopedia entry for this item in the PDA.
+    /// <para>Adds an encyclopedia entry for this item in the PDA. This method does not ask for display text, for that you must use the <see cref="LanguageHandler"/>.</para>
+    /// <para>The encyclopedia entry's key will be set as the TechType string.</para>
+    /// <para>The language keys for this ency are as as follows: "Ency_{TechType}" (title) and "EncyDesc_{TechType}" (description), i.e. "Ency_Peeper".</para>
     /// </summary>
     /// <param name="path">The path this entry will appear in.</param>
-    /// <param name="popupSprite">The sprite that will popup once this entry is unlocked.</param>
+    /// <param name="popupSprite">The sprite that will pop up on the side of the screen once this entry is unlocked.</param>
     /// <param name="encyImage">The entry image that will appear in the encyclopedia entry</param>
+    /// <param name="unlockSound">The audio that is played when this sound is unlocked. Typical values are <see cref="PDAHandler.UnlockBasic"/> and <see cref="PDAHandler.UnlockBasic"/>. If unassigned, will have a default value of <see cref="PDAHandler.UnlockBasic"/>.</param>
     /// <param name="encyAudio">The audio that can be played in the entry.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
-    public ScanningGadget WithEncyclopediaEntry(string path, Sprite popupSprite, Texture2D encyImage = null, FMODAsset encyAudio = null)
+    public ScanningGadget WithEncyclopediaEntry(string path, Sprite popupSprite, Texture2D encyImage = null, FMODAsset unlockSound = null, FMODAsset encyAudio = null)
     {
         EncyclopediaEntryData = new PDAEncyclopedia.EntryData
         {
@@ -133,7 +206,9 @@ public class ScanningGadget : Gadget
             path = path,
             nodes = path.Split('/'),
             popup = popupSprite,
-            sound = encyAudio
+            image = encyImage,
+            sound = unlockSound ?? PDAHandler.UnlockBasic,
+            audio = encyAudio
         };
 
         return this;
@@ -177,7 +252,7 @@ public class ScanningGadget : Gadget
         List<StoryGoal> storyGoalsToTrigger = null,
 #endif
         FMODAsset unlockSound = null, 
-        string unlockMessage = "NotificationBlueprintUnlocked"
+        string unlockMessage = null
         )
     {
         AnalysisTech ??= new KnownTech.AnalysisTech();
@@ -192,9 +267,7 @@ public class ScanningGadget : Gadget
         AnalysisTech.storyGoals = storyGoalsToTrigger ?? new();
 #endif
         AnalysisTech.unlockSound = unlockSound;
-        AnalysisTech.unlockMessage = unlockMessage == DefaultUnlockMessage
-            ? unlockMessage
-            : $"{prefab.Info.TechType.AsString()}_DiscoverMessage";
+        AnalysisTech.unlockMessage = unlockMessage ?? KnownTechHandler.DefaultUnlockData.BlueprintUnlockMessage;
 
         return this;
     }
@@ -214,7 +287,7 @@ public class ScanningGadget : Gadget
             CraftData.GetBuilderCategories(GroupForPda, categories);
             if (categories.Contains(CategoryForPda))
             {
-                CraftDataHandler.AddToGroup(GroupForPda, CategoryForPda, prefab.Info.TechType);
+                CraftDataHandler.AddToGroup(GroupForPda, CategoryForPda, prefab.Info.TechType, PdaSortTarget, PdaSortPosition == SortPosition.AppendAfter);
             }
             else
             {
@@ -246,11 +319,11 @@ public class ScanningGadget : Gadget
             PDAHandler.AddCustomScannerEntry(ScannerEntryData);
         }
 
-        if (CompoundTechsForUnlock is { Count: > 0 } || RequiredForUnlock is not TechType.None)
+        if (CompoundTechsForUnlock is { Count: > 0 } || RequiredForUnlock != TechType.None)
         {
             if (AnalysisTech is null)
             {
-                KnownTechHandler.SetAnalysisTechEntry(RequiredForUnlock, new[] { prefab.Info.TechType }, DefaultUnlockMessage);
+                KnownTechHandler.SetAnalysisTechEntry(RequiredForUnlock, new[] { prefab.Info.TechType }, KnownTechHandler.DefaultUnlockData.BlueprintUnlockMessage, KnownTechHandler.DefaultUnlockData.BlueprintUnlockSound);
             }
 
             KnownTechPatcher.UnlockedAtStart.Remove(prefab.Info.TechType);

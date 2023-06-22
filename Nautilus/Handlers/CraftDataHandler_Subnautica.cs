@@ -1,12 +1,10 @@
-﻿using Nautilus.Crafting;
+#if SUBNAUTICA
+using Nautilus.Crafting;
 using Nautilus.Patchers;
 
-#if SUBNAUTICA
 namespace Nautilus.Handlers;
 
-#if SUBNAUTICA
 using static CraftData;
-#endif
 
 /// <summary>
 /// A handler class for adding and editing crafted items.
@@ -57,6 +55,28 @@ public partial class CraftDataHandler
     public static void SetQuickSlotType(TechType techType, QuickSlotType slotType)
     {
         CraftDataPatcher.CustomSlotTypes[techType] = slotType;
+    }
+
+    /// <summary>
+    /// <para>Allows you to edit MaxCharge for TechTypes. Can be used for existing TechTypes too.</para>
+    /// <para>Careful: This has to be called after <see cref="SetRecipeData(TechType, RecipeData)"/>.</para>
+    /// </summary>
+    /// <param name="techType">The TechType whose MaxCharge you want to edit.</param>
+    /// <param name="maxCharge">The MaxCharge for that TechType.</param>
+    public static void SetMaxCharge(TechType techType, double maxCharge)
+    {
+        CraftDataPatcher.CustomMaxCharges[techType] = (float)maxCharge;
+    }
+
+    /// <summary>
+    /// <para>Allows you to edit EnergyCost for TechTypes. Can be used for existing TechTypes too.</para>
+    /// <para>Careful: This has to be called after <see cref="SetRecipeData(TechType, RecipeData)"/>.</para>
+    /// </summary>
+    /// <param name="techType">The TechType wose EnergyCost you want to edit</param>
+    /// <param name="energyCost">The EnergyCost for that TechType.</param>
+    public static void SetEnergyCost(TechType techType, double energyCost)
+    {
+        CraftDataPatcher.CustomEnergyCost[techType] = (float)energyCost;
     }
 
     /// <summary>
