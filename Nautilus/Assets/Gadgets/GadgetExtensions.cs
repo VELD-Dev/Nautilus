@@ -149,7 +149,7 @@ public static class GadgetExtensions
     }
 
     /// <summary>
-    /// Sets this item as a vehicle upgrade module. Cyclops upgrades are not supported by this function.
+    /// Sets this item as a vehicle upgrade module. Cyclops upgrades are not supported by this gadget.
     /// <para>If you're using this function, please do not use <see cref="SetEquipment(ICustomPrefab, EquipmentType)"/>,<br/>
     /// it would interefere with this and possibly make the game crash or cause the mod to not work.</para>
     /// </summary>
@@ -172,6 +172,29 @@ public static class GadgetExtensions
             return upgradeModuleGadget;
         }
     }
+
+#if SUBNAUTICA
+    /// <summary>
+    /// Sets this item as a cyclops upgrade module. Other module types are not supported by this gadget.
+    /// <para>If you're using this function, please do not use <see cref="SetEquipment(ICustomPrefab, EquipmentType)"/> nor<br/>
+    /// <see cref="SetVehicleUpgradeModule(ICustomPrefab, EquipmentType, QuickSlotType)"/>, it would interfere with this<br/>
+    /// and possibly make the game crash or cause the mod to not work.</para>
+    /// </summary>
+    /// <param name="customPrefab">The custom prefab to set vehicle upgrade for.</param>
+    /// <returns>An instance to the created <see cref="CyclopsModuleGadget"/> to continue the upgrade settings on.</returns>
+    public static CyclopsModuleGadget SetCyclopsModule(this ICustomPrefab customPrefab)
+    {
+        if(customPrefab.TryGetGadget(out CyclopsModuleGadget cyclopsModuleGadget))
+            return cyclopsModuleGadget;
+        else
+        {
+            customPrefab.SetEquipment(EquipmentType.CyclopsModule).WithQuickSlotType(QuickSlotType.None);
+            cyclopsModuleGadget = new CyclopsModuleGadget(customPrefab);
+            customPrefab.TryAddGadget(cyclopsModuleGadget);
+            return cyclopsModuleGadget;
+        }
+    }
+#endif
 
     /// <summary>
     /// Creates a craft tree for this prefab. The created craft tree is immediately returned after this method is executed. 
