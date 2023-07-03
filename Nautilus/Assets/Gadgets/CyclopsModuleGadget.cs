@@ -4,6 +4,7 @@ using Nautilus.MonoBehaviours;
 using Nautilus.Patchers;
 using Nautilus.Utility;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,6 +12,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Nautilus.Assets.Gadgets;
+
+/// <summary>
+/// Represents a Cyclops module (or upgrade) gadget.
+/// </summary>
 public class CyclopsModuleGadget : Gadget
 {
     /// <summary>
@@ -33,7 +38,7 @@ public class CyclopsModuleGadget : Gadget
     /// If the module is an active module, the ModuleClass MUST be given.<br/>
     /// It is used to render buttons on the HUD of the Cyclops.
     /// </summary>
-    public CyclopsModuleBase ModuleClass { get; private set; }
+    public Type ModuleClass { get; private set; }
 
     /// <summary>
     /// Delegate invoked when the module is added to the Cyclops.
@@ -152,11 +157,11 @@ public class CyclopsModuleGadget : Gadget
     /// For every module that has a button, this is a required field.
     /// <para>N.B. This will make a button based on many things associated in other places with this item.</para>
     /// </summary>
-    /// <param name="moduleClass">A subclass of CyclopsModuleBase</param>
+    /// <typeparam name="T">Class of the module derivated from <see cref="CyclopsModuleBase"/>.</typeparam>
     /// <returns>A reference to this instance with changes applied.</returns>
-    public CyclopsModuleGadget WithModuleClass(CyclopsModuleBase moduleClass)
+    public CyclopsModuleGadget WithModuleClass<T>() where T : CyclopsModuleBase
     {
-        ModuleClass = moduleClass;
+        ModuleClass = typeof(T);
         return this;
     }
 

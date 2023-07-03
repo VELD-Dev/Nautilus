@@ -159,43 +159,28 @@ public class VehicleUpgradesExample : BaseUnityPlugin
         selfDefMK2prefab.Register();
 
         /*
-         * And finally, a CUSTOMIZABLE-after-restart depth module!
+         * Let's try to make a Cyclops module this time.
          */
+        var cyclopsModuleInfo = PrefabInfo.WithTechType("CyclopsModuleExample", "Example Cyclops Module", "An active example cyclops module.")
+            .WithIcon(SpriteManager.Get(TechType.CyclopsDecoyModule));
 
-        // PLANNED FOR ANOTHER PR.
-/*
-        PrefabInfo prefabInfo = PrefabInfo.WithTechType("SeamothCustomDepthModule", "Seamoth Variable Depth Upgrade", "Customize the depth of your upgrade from the game settings!")
-            .WithIcon(SpriteManager.Get(TechType.SeamothReinforcementModule))
-            .WithSizeInInventory(new Vector2int(1, 1));
+        var cyclopsModulePrefab = new CustomPrefab(cyclopsModuleInfo);
+        var cyclopsModuleClone = new CloneTemplate(cyclopsModuleInfo, TechType.CyclopsShieldModule);
 
-        CustomPrefab prefab = new(prefabInfo);
-        CloneTemplate clone = new(prefabInfo, TechType.SeamothReinforcementModule);
-
-        prefab.SetGameObject(clone);
-        prefab.SetPdaGroupCategory(TechGroup.VehicleUpgrades, TechCategory.VehicleUpgrades);
-        prefab.SetRecipe(new Crafting.RecipeData()
+        cyclopsModulePrefab.SetGameObject(cyclopsModuleClone);
+        cyclopsModulePrefab.SetRecipe(new()
         {
             craftAmount = 1,
-            Ingredients = new List<CraftData.Ingredient>()
+            Ingredients =
             {
-                new CraftData.Ingredient(TechType.SeamothReinforcementModule),
-                new CraftData.Ingredient(TechType.Diamond, 2)
+                new CraftData.Ingredient(TechType.Titanium)
             }
         })
-            .WithFabricatorType(CraftTree.Type.SeamothUpgrades)
-            .WithCraftingTime(4f)
-            .WithStepsToFabricatorTab("SeamothModules");
-        prefab.SetVehicleUpgradeModule(EquipmentType.SeamothModule)
-                .WithDepthUpgrade(() => config.MaxDepth, true)
-                .WithOnModuleAdded((Vehicle vehicleInstance, int slotId) => {
-                    Subtitles.Add($"New seamoth depth: {config.MaxDepth} meters.\nAdded in slot #{slotId + 1}.");
-                })
-                .WithOnModuleRemoved((Vehicle vehicleInstance, int slotId) =>
-                {
-                    Subtitles.Add($"Seamoth depth module removed from slot #{slotId + 1}!");
-                });
-        prefab.Register();
-*/
+            .WithFabricatorType(CraftTree.Type.CyclopsFabricator)
+            .WithCraftingTime(2.5f);
+
+        cyclopsModulePrefab.SetCyclopsModule()
+            .WithModuleClass()
     }
 }
 
