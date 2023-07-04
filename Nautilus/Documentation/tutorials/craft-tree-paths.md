@@ -1,4 +1,4 @@
-# SN1 Crafting Tree Paths
+# Crafting Tree Paths
 
 List of default crafting tree paths for use in the `CraftingGadget.WithStepsToFabricatorTab(...)` method, alongside any of the methods in the [CraftTreeHandler](xref:Nautilus.Handlers.CraftTreeHandler) class.
 
@@ -42,6 +42,12 @@ Personal
 Machines
   - [Craft nodes]
 
+Upgrades (**BZ only**)
+  - ExosuitUpgrades (Exosuit upgrades)
+    - [Craft nodes]
+  - SeatruckUpgrades (Seatruck upgrades)
+    - [Craft nodes]
+
 #### Simplified list of paths
 * `Resources/BasicMaterials`
 * `Resources/AdvancedMaterials`
@@ -52,6 +58,8 @@ Machines
 * `Personal/Equipment`
 * `Personal/Tools`
 * `Machines`
+* `Upgrades/ExosuitUpgrades` (**BZ only**)
+* `Upgrades/SeatruckUpgrades` (**BZ only**)
 
 ---
 
@@ -63,12 +71,15 @@ Not applicable; all crafting nodes are located in the root.
 ## Constructor (Mobile vehicle bay):
   - Vehicles
     - [Craft nodes]
-  - Rocket
+  - Rocket (**SN1 only**)
+    - [Craft nodes]
+  - Modules (**BZ only**)
     - [Craft nodes]
 
 #### Simplified list of paths
 * `Vehicles`
-* `Rocket`
+* `Rocket` (**SN1 only**)
+* `Modules` (**BZ only**)
 
 ---
 
@@ -88,20 +99,39 @@ Not applicable; all crafting nodes are located in the root.
 ---
 
 ## SeamothUpgrades (Vehicle Upgrade Console):
-CommonModules (Common Modules)
+CommonModules (Common Modules) (**SN1 only**)
   - [Craft nodes]
 
-SeamothModules (Seamoth Modules)
+SeamothModules (Seamoth Modules) (**SN1 only**)
   - [Craft nodes]
 
 ExosuitModules (Prawn Suit Modules)
   - [Craft nodes]
 
-Torpedoes (Torpedoes)
+Torpedoes (Torpedoes) (**SN1 only**)
+  - [Craft nodes]
+
+SeaTruckUpgrades (Seatruck upgrades) (**BZ only**)
   - [Craft nodes]
 
 #### Simplified list of paths
-* `CommonModules`
-* `SeamothModules`
+* `CommonModules` (**SN1 only**)
+* `SeamothModules` (**SN1 only**)
 * `ExosuitModules`
-* `Torpedoes`
+* `Torpedoes` (**SN1 only**)
+* `SeaTruckUpgrades` (**BZ only**)
+
+---
+
+## PrecursorPartOrgans (Precursor crafting bench where you craft organs) (BZ only)
+Not applicable; all crafting nodes are located in the root.
+
+---
+
+## PrecursorPartTissue (Precursor crafting bench where you craft tissue) (BZ only)
+Not applicable; all crafting nodes are located in the root.
+
+---
+
+## PrecursorPartSkeleton (Precursor crafting bench whre you craft the skeleton) (BZ only)
+Not applicable; all crafting nodes are located in the root.
