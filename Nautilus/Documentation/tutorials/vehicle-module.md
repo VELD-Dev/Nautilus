@@ -93,6 +93,7 @@ Admitting we've already done the prefab info and the custom prefab, let's direct
 var maxcharge = 50f;
 var cooldown = 10f;
 prefab.SetUpgradeModule(EquipmentType.VehicleModule, QuickSlotType.SelectableChargeable)
+    .WithEnergyCost(0f)  // Actually required, even if you consume energy later in your delegates, you must put a value here.
     .WithMaxCharge(maxcharge)
     .WithCooldown(cooldown)
     .WithOnModuleAdded((Vehicle inst, int slotId) =>
